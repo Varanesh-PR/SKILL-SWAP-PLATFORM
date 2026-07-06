@@ -1,0 +1,16 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<div class="container">
+    <h2>Top Matches</h2>
+
+    {% for m in matches %}
+    <div class="card">
+        <strong>{{ m.name }}</strong><br>
+        Teach: {{ m.teach }}<br>
+        Learn: {{ m.learn }}<br>
+        <span class="percent">{{ m.percent }}%</span>
+    </div>
+    {% endfor %}
+
+    <a href="/">Back</a>
+</div>

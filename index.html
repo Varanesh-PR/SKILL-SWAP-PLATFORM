@@ -1,0 +1,23 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<div class="container">
+    <h2>Skill Swap Platform</h2>
+
+    {% if success %}
+    <p class="success">Skill added successfully!</p>
+    {% endif %}
+
+    {% if duplicate %}
+    <p class="error">Already submitted!</p>
+    {% endif %}
+
+    <form method="post">
+        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="text" name="teach" placeholder="Skill you teach" required>
+        <input type="text" name="learn" placeholder="Skill you learn" required>
+        <button type="submit">Submit</button>
+    </form>
+
+    <a href="/matches">View Matches</a>
+    <a href="/visualize">View Graph</a>
+</div>

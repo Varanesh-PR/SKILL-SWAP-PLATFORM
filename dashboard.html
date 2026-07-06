@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+  background: #f5f7fa;
+}
+.card {
+  border-radius: 15px;
+}
+</style>
+</head>
+
+<body class="container mt-4">
+
+<h2 class="text-primary mb-4">Welcome {{ session.user }}</h2>
+
+<div class="row">
+
+<!-- USERS -->
+<div class="col-md-6">
+<div class="card p-3 shadow">
+<h4>👥 Users</h4>
+<ul class="list-group">
+{% for user in users %}
+<li class="list-group-item d-flex justify-content-between">
+{{ user.username }}
+<a href="/chat/{{ user.username }}" class="btn btn-sm btn-info">Chat</a>
+</li>
+{% endfor %}
+</ul>
+</div>
+</div>
+
+<!-- MATCHES -->
+<div class="col-md-6">
+<div class="card p-3 shadow">
+<h4>🤝 Matches</h4>
+<button class="btn btn-primary mb-2" onclick="loadMatch()">Find Matches</button>
+<ul id="matches" class="list-group"></ul>
+</div>
+</div>
+
+</div>
+
+<!-- GRAPH -->
+<div class="card p-3 mt-4 shadow">
+<h4>📊 Live Graph</h4>
+<canvas id="chart"></canvas>
+</div>
+
+<script>
+function loadMatch(){
+fetch('/match').then(r=>r.json()).then(data=>{
+let html="";
+data.forEach(u=>{
+let status = u[1]>=2?"🔥 Best Match":u[1]==1?"👍 Good":"❌ No Match";
+html+=`<li class="list-group-item">${u[0]} - ${status}</li>`;
+});
+document.getElementById("matches").innerHTML=html;
+});
+}
+
+let chart;
+
+function loadGraph(){
+fetch('/graph').then(r=>r.json()).then(data=>{
+if(!chart){
+chart=new Chart(document.getElementById('chart'),{
+type:'bar',
+data:{
+labels:Object.keys(data),
+datasets:[{
+label:'Matches',
+data:Object.values(data)
+}]
+}
+});
+}else{
+chart.data.labels=Object.keys(data);
+chart.data.datasets[0].data=Object.values(data);
+chart.update();
+}
+});
+}
+
+setInterval(loadGraph,2000);
+</script>
+
+</body>
+</html>
